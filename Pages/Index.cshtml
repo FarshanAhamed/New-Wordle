@@ -1,0 +1,293 @@
+﻿@page
+@model NewWordle.Pages.IndexModel
+@{
+    Layout = "Shared/_CommonLayout.cshtml";
+    ViewBag.Title = "New Wordle";
+}
+<script>    
+
+    wordHash = JSON.parse('@Html.Raw(Model.SampleHash)');
+
+    window.onload = function() {
+        
+        var lastSavedHash = JSON.parse(localStorage.getItem("wordHash"));
+        if(lastSavedHash) {
+            if (lastSavedHash.length === wordHash.length) {
+                for (let i = 0; i < lastSavedHash.length; i++ ) {
+                    if (lastSavedHash[i] !== wordHash[i]) {
+                        localStorage.setItem("wordHash", JSON.stringify(wordHash));
+                        refreshDataset();
+                        break;
+                    }
+                }
+            } else {
+                localStorage.setItem("wordHash", JSON.stringify(wordHash));
+                refreshDataset();
+            }
+        } else {
+            localStorage.setItem("wordHash", JSON.stringify(wordHash));
+            refreshDataset();
+        }
+
+        fetch('/words').then(response => response.json()).then(data => allWords = data);
+        letters = JSON.parse(localStorage.getItem("letters"));
+
+        if (!letters)
+            letters = [];        
+
+        col = (letters.length - 1) % @(Model.LetterCount);
+        //row = Math.floor(letters.length / @(Model.LetterCount));
+        row = JSON.parse(localStorage.getItem("row"));
+        if(!row)
+            row = 0;
+
+        loadLetters();
+    }
+
+    function refreshDataset(){
+        localStorage.removeItem("letters");
+        localStorage.removeItem("row");
+
+        over = false;
+    }
+
+    function refresh(){
+        localStorage.clear();
+        window.location.reload();
+        over = false;
+    }
+    
+    function addLetter(l) {
+        if (row >= @(Model.TryCount))
+            return;
+
+        let i = row;
+        for (let j = 0; j < @(Model.LetterCount); j++ ) {
+            let element = document.getElementById('i' + i + 'j' + j);
+            if(!element.innerHTML){
+                element.innerHTML = l;
+                letters.push({char: l.toUpperCase(), color: 'default'});
+                localStorage.setItem("letters", JSON.stringify(letters));
+                col = (letters.length - 1) % @(Model.LetterCount);
+                return;
+            }
+        }
+    }
+
+    function enterEvent(){
+        if (row < @(Model.TryCount)){
+            if (col == @(Model.LetterCount - 1)){
+                let lastElement = document.getElementById('i' + row + 'j' + @(Model.LetterCount - 1));
+                if(lastElement.innerHTML){
+                    if (allWords.indexOf(getTypedWord(row).toLowerCase()) === -1) {
+                        showToast('Invalid word!', "sad");
+                        return;
+                    }
+
+                    matchAttempt();
+                    row++;
+                    localStorage.setItem("row", JSON.stringify(row));
+                }                
+            }
+        }
+    }
+
+    function getTypedWord(r){
+        let i = r, typedWord = '';
+
+        for (let j = 0; j < @(Model.LetterCount); j++ ) {
+            let element = document.getElementById('i' + i + 'j' + j);
+            typedWord += element.innerHTML;            
+        }
+
+        return typedWord;
+    }
+
+    function matchAttempt(){
+        var greenCount = 0;
+        for(let i = letters.length - @(Model.LetterCount), j = 0; i < letters.length; i++, j++){
+            let l = letters[i];
+            let lHash = hashThis(l.char);
+            console.log(l);
+            console.log(lHash);
+            let indexes = getAllIndexes(wordHash,lHash);
+            if (!indexes || indexes.length === 0) {
+                l.color = 'grey';
+            }
+            else if (indexes.indexOf(j) !== -1) {
+                l.color = 'green';
+                greenCount++;
+            }
+            else {
+                l.color = 'orange';
+            } 
+        }
+
+        if (greenCount === @(Model.LetterCount)) {
+            over = true;
+            showToast("Congratulations", "happy");
+        }
+
+        localStorage.setItem("letters", JSON.stringify(letters));
+        loadLetters();
+    }
+
+    function getAllIndexes(arr, val) {
+        var indexes = [], i;
+        for(i = 0; i < arr.length; i++)
+            if (arr[i] === val)
+                indexes.push(i);
+        return indexes;
+    }
+
+    function hashThis(input)
+    {
+        let shaObj = new jsSHA("SHA-256", "TEXT", {encoding: "UTF8"});
+        shaObj.update(input);
+        const hashString = "0x" + shaObj.getHash("HEX");
+        return hashString;
+    }
+
+    function loadLetters() {
+        let v = 0;
+
+        if(letters.length > 0) {
+            for (let i = 0; i < @(Model.TryCount); i++ ) {
+                for (let j = 0; j < @(Model.LetterCount); j++ ) {
+                    let element = document.getElementById('i' + i + 'j' + j);
+                    if (v < letters.length) {  
+                        var l = letters[v++];
+                        element.innerHTML = l.char;
+                        element.classList.add(l.color);
+                    }
+                    else
+                        element.innerHTML = null;
+                }
+            }
+        }
+    }
+
+    function clearLastLetter() {
+        if (row >= @(Model.TryCount))
+            return;
+
+        let i = row;
+        for (let j = @(Model.LetterCount - 1); j >= 0 ; j-- ) {
+            let element = document.getElementById('i' + i + 'j' + j);
+            if(element.innerHTML){
+                element.innerHTML = null;
+                letters.pop();
+                localStorage.setItem("letters", JSON.stringify(letters));
+                col = (letters.length - 1) % @(Model.LetterCount);
+                return;
+            }
+        }        
+    }
+
+    function onClickKeyBoard(){
+        let prDiv = document.getElementsByClassName('game-div');
+        prDiv.focus();
+    }
+
+    
+</script>
+
+<div class="game-div" style="width:@(Model.Width)px;height:@(Model.Height)px;">
+
+@for(int i = 0; i < @Model.TryCount; i++)
+{
+    <div class="word-div">
+        
+    @for(int j = 0; j < @Model.LetterCount; j++)
+    {
+        <div id="i@(i)j@(j)" class="letter-div"></div>
+    }
+     
+    </div>
+}
+</div>
+
+<div id="keyboard" class="simple-keyboard"></div>
+
+<script>
+    let Keyboard = window.SimpleKeyboard.default;
+    
+    let myKeyboard = new Keyboard({
+        onChange: input => onChange(input),
+        onKeyPress: button => onKeyPress(button)
+    });
+
+    
+
+    function onChange(input) {        
+    }
+
+
+    function onKeyPress(key) {
+        if(key === '{enter}')
+            handleInput(13, '');
+        else if (key === '{bksp}')
+            handleInput(8, '');
+        else
+            handleInput(key.charCodeAt(0), key);        
+    }
+
+    var widthMatch = window.matchMedia("(max-width: 600px)")
+    switchKeyboardLayout(widthMatch); // Call listener function at run time
+    widthMatch.addListener(switchKeyboardLayout); // Attach listener function on state changes
+
+
+    function switchKeyboardLayout(width) {
+        if(width.matches) {
+            myKeyboard.setOptions({
+                layoutName: "shift",                
+                layout: {
+                    'default': [                
+                        'q w e r t y u i o p',
+                        'a s d f g h j k l',
+                        'z x c v b n m',
+                        '{enter} {bksp}'
+                      ],
+                      'shift': [                
+                        'Q W E R T Y U I O P',
+                        'A S D F G H J K L',
+                        'Z X C V B N M',
+                        '{enter} {bksp}'
+                      ]
+                },
+                display: {
+                    '{bksp}': 'DEL',
+                    '{enter}': 'ENTER'
+                },
+                disableButtonHold: false
+            });   
+        } else {
+            myKeyboard.setOptions({
+                layoutName: "shift",
+                //excludeFromLayout: {
+                //    shift: [".com", "{space}", "@@", "{shift}", ">", "<", "?", "\"", ":", "{lock}", "{tab}", "|", "}", "{",
+                //    "~", "!", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+"]
+                //},
+                layout: {
+                    'default': [                
+                        'q w e r t y u i o p',
+                        'a s d f g h j k l',
+                        'z x c v b n m',
+                        '{enter} {bksp}'
+                      ],
+                      'shift': [                
+                        'Q W E R T Y U I O P',
+                        'A S D F G H J K L {enter}',
+                        'Z X C V B N M {bksp}'
+                      ]
+                },
+                display: {
+                    '{bksp}': 'DEL',
+                    '{enter}': 'ENTER'
+                },
+                disableButtonHold: false
+            });   
+        }
+    }
+
+</script>

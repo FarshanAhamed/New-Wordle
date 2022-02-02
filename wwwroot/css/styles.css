@@ -1,0 +1,107 @@
+﻿body {
+    font-family: 'Roboto';
+    margin: 0px;
+}
+
+.main {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.main .nav-bar {
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
+    margin-bottom: 10px;
+}
+
+.main .nav-bar h1 {
+    margin: 10px 0px;
+}
+
+.main .nav-bar p {
+    margin: 0px 10px;      
+}
+.main .nav-bar p.blue {
+    color: blue;
+}
+
+
+.main .footer {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    margin-bottom: 10px;
+}
+
+.main .footer p {
+    font-size: 12px;
+    color: #a79d9d;
+    margin: 2px 0px;
+}
+
+
+.main .rend-body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    overflow: auto;
+}
+
+.main .rend-body #keyboard {
+    margin: 10px 0px;
+    width: 50%;
+}
+
+.main .rend-body .game-div {    
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-direction:column;
+}
+
+@media only screen and (max-width: 600px) {
+    .main .rend-body #keyboard {
+        width: 100%;
+        height: 30%;
+        margin-top: 15px;
+    }
+}
+
+.main .rend-body .word-div {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main .rend-body .word-div .letter-div {
+    width: 50px;
+    height: 50px;
+    border: 2px solid grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+    text-transform: uppercase;
+}
+
+.main .rend-body .word-div .letter-div.default {
+    background-color: white;
+}
+.main .rend-body .word-div .letter-div.grey {
+    background-color: grey;
+    color: white;
+}
+.main .rend-body .word-div .letter-div.green {
+    background-color: green;
+    color: white;
+}
+.main .rend-body .word-div .letter-div.orange {
+    background-color: orange;
+    color: white;
+}
+

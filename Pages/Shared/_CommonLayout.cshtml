@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js"></script>
+    <script type="text/javascript" src="~/js/sha256.js"></script>    
+    <script type="text/javascript" src="~/js/toast.min.js"></script>
+    <script type="text/javascript" src="~/js/scripts.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div class="main">
+        <div class="nav-bar">
+            <h1>@ViewBag.Title</h1>
+            <p>by Jin Yang</p>
+            <p class="blue" onclick="refresh()" style="user-select:none; cursor:pointer;">Refresh</p>
+        </div>
+        <div class="rend-body">
+            @RenderBody()
+        </div>    
+        <div class="footer">
+            <p>New Wordle by Jin Yang © 2022</p>
+            <p>New Pied piper coming soon!</p>
+        </div>
+    </div>
+</body>
+</html>
