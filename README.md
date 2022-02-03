@@ -1,6 +1,6 @@
 # New Wordle
 
-Wordle game recreated in .NET 6 using Razor Pages
+Wordle game recreated in .NET 6 using Razor Pages. Check out the [demo](https://new-wordle.azurewebsites.net)
 
 Here is a small screenshot
 
