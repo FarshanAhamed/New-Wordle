@@ -4,5 +4,5 @@ Wordle game recreated in .NET 6 using Razor Pages. Check out the [demo](https://
 
 Here is a small screenshot
 
-<img src="https://user-images.githubusercontent.com/15251751/152255236-a28d3b13-a166-405f-8c94-d6b74a83bc28.png" alt="wordle demo" width="200" />
+<img width="400" alt="image" src="https://user-images.githubusercontent.com/15251751/152404674-835ec852-7287-4e8d-ac31-3f1217800536.png">
 
