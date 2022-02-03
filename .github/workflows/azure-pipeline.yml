@@ -6,7 +6,7 @@ name: Azure web app
 on:
   push:
     branches:
-      - main
+      - release
   workflow_dispatch:
 
 jobs:
