@@ -1,4 +1,4 @@
-# New Wordle
+# New Wordle [![.NET](https://github.com/FarshanAhamed/New-Wordle/actions/workflows/dotnet.yml/badge.svg)](https://github.com/FarshanAhamed/New-Wordle/actions/workflows/dotnet.yml)
 
 Wordle game recreated in .NET 6 using Razor Pages. Check out the [demo](https://new-wordle.azurewebsites.net)
 
