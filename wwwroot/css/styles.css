@@ -4,8 +4,11 @@
 }
 
 .main {
+    display: flex;
     max-width: 100%;
-    overflow: hidden;
+    overflow-x: hidden;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .main .nav-bar {
@@ -31,10 +34,7 @@
     display: flex;
     align-items: center;
     flex-direction: column;
-    position: absolute;
     width: 100%;
-    bottom: 0;
-    margin-bottom: 10px;
 }
 
 .main .footer p {
@@ -81,7 +81,7 @@
 .main .rend-body .word-div .letter-div {
     width: 50px;
     height: 50px;
-    border: 2px solid grey;
+    border: 2px solid grey;    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -101,9 +101,11 @@
 .main .rend-body .word-div .letter-div.green {
     background-color: green;
     color: white;
+    border-color: green;
 }
 .main .rend-body .word-div .letter-div.orange {
     background-color: orange;
     color: white;
+    border-color: orange;
 }
 
