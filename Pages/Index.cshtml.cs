@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Caching.Memory;
 using NewWordle.Services;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,14 +13,39 @@ namespace NewWordle.Pages
         public int LetterCount { get; } = 5;
         public int TryCount { get; } = 6;
         //public char[] Sample { get; } = { 'E', 'A', 'R', 'L', 'Y' };
-        public char[] Sample { get; } = WordList.GetRandomWord();
-        public string SampleHash { get 
-            { return JsonSerializer.Serialize(Hash(Sample)); } }
+        public char[] Sample { get; set; }
+        public string SampleHash { get; set; } 
+            
         public int Width { get { return LetterCount * (50 + (2 * 2)) + (LetterCount - 1) * 5; } }
         public int Height { get { return TryCount * (50 + (2 * 2)) + (TryCount - 1) * 5; } }
-        
-        public void OnGet()
+
+        private readonly IMemoryCache _memoryCache;
+
+        public IndexModel(IMemoryCache memoryCache)
         {
+            _memoryCache = memoryCache;
+
+            if (!_memoryCache.TryGetValue("word", out string word))
+            {
+                Sample = WordList.GetRandomWord();
+                word = new string(Sample);
+                SampleHash = JsonSerializer.Serialize(Hash(Sample));
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetSlidingExpiration(DateTime.UtcNow.Date.AddDays(1) - DateTime.UtcNow);
+
+                _memoryCache.Set("word", word, cacheEntryOptions);
+            }
+            else
+            {
+                Sample = word.ToCharArray();
+                SampleHash = JsonSerializer.Serialize(Hash(Sample));
+            }
+        }
+
+        public void OnGet()
+        {           
+
         }
 
         public string[] Hash(char[] s)
