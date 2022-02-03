@@ -77,40 +77,5 @@ namespace NewWordle.Pages
 
             return sample.ToArray();
         }
-
-        private string[] EncodeThis(char[] s)
-        {
-            string key = "35353535353535366363636363";
-            List<string> sample = new List<string>();
-
-            foreach (var c in s)
-            {
-                string credentials = c.ToString();
-
-                var encodingCred = new System.Text.ASCIIEncoding();
-                var encodingKey = new System.Text.ASCIIEncoding();
-                //byte[] keyByte = encodingKey.GetBytes(key);
-                byte[] keyByte = StringToByteArray(key);
-                byte[] credentialsBytes = encodingCred.GetBytes(credentials);
-                using (var hmacsha1 = new HMACSHA1(keyByte))
-                {
-                    byte[] hashmessage = hmacsha1.ComputeHash(credentialsBytes);
-                    string hash = BitConverter.ToString(hashmessage).Replace("-", string.Empty).ToLower();
-                    sample.Add(hash);
-                }
-            }
-
-            return sample.ToArray();
-        }
-
-        private byte[] StringToByteArray(string hex)
-        {
-            int NumberChars = hex.Length;
-            byte[] bytes = new byte[NumberChars / 2];
-            for (int i = 0; i < NumberChars; i += 2)
-                bytes[i / 2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
-        }
-
     }
 }
