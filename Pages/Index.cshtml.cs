@@ -20,6 +20,7 @@ namespace NewWordle.Pages
         public int Height { get { return TryCount * (50 + (2 * 2)) + (TryCount - 1) * 5; } }
 
         private readonly IMemoryCache _memoryCache;
+        public string Wordd { get; set; } = "Sample";
 
         public IndexModel(IMemoryCache memoryCache)
         {
